@@ -1,0 +1,21 @@
+#server.port=8080
+#
+#spring.datasource.url=${DB_URL}
+#spring.datasource.username=${DB_USERNAME}
+#spring.datasource.password=${DB_PASSWORD}
+#
+#spring.jpa.hibernate.ddl-auto=validate
+#spring.jpa.show-sql=false
+
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
