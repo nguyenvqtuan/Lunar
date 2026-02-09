@@ -13,15 +13,19 @@ jobs:
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
+
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
           cache: gradle
+
       - name: Grant execute permission for gradlew
-        uses: chmod +x gradlew
+        run: chmod +x gradlew
+
       - name: Run spotless
-        uses: ./gradlew spotlessApply & ./gradlew spotlessJavaApply
+        run: ./gradlew spotlessApply spotlessJavaApply
+
       - name: Clean build
-        uses: ./gradlew clean & ./gradlew build
+        run: ./gradlew clean build
