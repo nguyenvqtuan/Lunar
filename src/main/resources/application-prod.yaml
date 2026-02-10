@@ -22,6 +22,14 @@ spring:
       ddl-auto: validate
     show-sql: false
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
 logging:
+  file:
+    name: /var/log/lunar/app.log
   level:
     root: INFO
