@@ -1,0 +1,90 @@
+<configuration>
+
+    <!-- Import Spring Boot converters -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <springProperty scope="context"
+                    name="appName"
+                    source="spring.application.name"/>
+
+    <springProfile name="dev">
+        <appender name="CONSOLE"
+                  class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern disabled-ansi="false">
+                    %clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} ${appName} [%X{traceId:-}] [%X{requestId:-}] %clr(%-5level) [%15.15thread] %clr(%-40.40logger{39}){cyan}: %msg%n%wEx
+                </pattern>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+        </root>
+    </springProfile>
+<!--    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>-->
+
+<!--    &lt;!&ndash; Application name from Spring &ndash;&gt;-->
+<!--    <springProperty scope="context"-->
+<!--                    name="appName"-->
+<!--                    source="spring.application.name"/>-->
+
+<!--    &lt;!&ndash; ============================= &ndash;&gt;-->
+<!--    &lt;!&ndash; DEV PROFILE (Readable Logs) &ndash;&gt;-->
+<!--    &lt;!&ndash; ============================= &ndash;&gt;-->
+<!--    <springProfile name="dev">-->
+
+<!--        <appender name="CONSOLE"-->
+<!--                  class="ch.qos.logback.core.ConsoleAppender">-->
+<!--            <encoder>-->
+<!--                <pattern>-->
+<!--                    %d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} %style{${spring:spring.application.name}}{blue} %style{[%X{X-Request-ID}][%X{traceId}][%X{spanId}]}{yellow bold} %highlight{${LOG_LEVEL_PATTERN:-%5p}}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=green} [%15.15t] %style{%-40.40C{1.}}{cyan} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}-->
+<!--                </pattern>-->
+<!--            </encoder>-->
+<!--        </appender>-->
+
+<!--        <root level="INFO">-->
+<!--            <appender-ref ref="CONSOLE"/>-->
+<!--        </root>-->
+
+<!--    </springProfile>-->
+
+
+    <!-- ============================= -->
+    <!-- PROD PROFILE (JSON Logging) -->
+    <!-- ============================= -->
+    <springProfile name="prod">
+
+        <appender name="JSON"
+                  class="ch.qos.logback.core.ConsoleAppender">
+            <encoder
+                    class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+
+                <providers>
+                    <timestamp/>
+                    <logLevel/>
+                    <threadName/>
+                    <loggerName/>
+
+                    <pattern>
+                        <pattern>
+                            {
+                                "service": "${appName}",
+                                "traceId": "%X{traceId:-}",
+                                "requestId": "%X{requestId:-}"
+                            }
+                        </pattern>
+                    </pattern>
+
+                    <message/>
+                    <stackTrace/>
+                </providers>
+
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="JSON"/>
+        </root>
+
+    </springProfile>
+</configuration>
