@@ -22,6 +22,12 @@ spring:
       ddl-auto: validate
     show-sql: false
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
 logging:
   level:
     root: INFO
