@@ -12,16 +12,15 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 public class TraceFilter extends OncePerRequestFilter {
-  @Override
-  protected void doFilterInternal(
-      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-      throws ServletException, IOException {
-    try {
-      MDC.put("traceId", UUID.randomUUID().toString());
-      MDC.put("requestId", request.getHeader("X-Request-Id"));
-      filterChain.doFilter(request, response);
-    } finally {
-      MDC.clear();
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        try {
+            MDC.put("traceId", UUID.randomUUID().toString());
+            MDC.put("requestId", request.getHeader("X-Request-Id"));
+            filterChain.doFilter(request, response);
+        } finally {
+            MDC.clear();
+        }
     }
-  }
 }

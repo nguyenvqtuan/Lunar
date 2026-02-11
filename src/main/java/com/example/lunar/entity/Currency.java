@@ -10,21 +10,21 @@ import java.util.UUID;
 @Table(name = "currency")
 public class Currency {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-  private String currency;
+    private String currency;
 
-  private LocalDateTime deletedDate;
+    private LocalDateTime deletedDate;
 
-  private String deletedBy;
+    private String deletedBy;
 
-  private LocalDateTime updatedDate;
+    private LocalDateTime updatedDate;
 
-  private String updatedBy;
+    private String updatedBy;
 
-  private LocalDateTime createdDate;
+    private LocalDateTime createdDate;
 
-  private String createdBy;
+    private String createdBy;
 }

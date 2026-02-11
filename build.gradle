@@ -64,7 +64,8 @@ spotless {
         importOrder()
         removeUnusedImports()
         formatAnnotations()
-        googleJavaFormat('1.19.1')
+        palantirJavaFormat() // Switch to Palantir for 4-space indentation
+        indentWithSpaces(4)
         endWithNewline()
     }
 

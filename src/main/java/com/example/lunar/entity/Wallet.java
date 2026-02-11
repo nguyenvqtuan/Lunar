@@ -17,27 +17,27 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Wallet {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-  private UUID userId;
+    private UUID userId;
 
-  private UUID currencyId;
+    private UUID currencyId;
 
-  private String status;
+    private String status;
 
-  private BigDecimal balance;
+    private BigDecimal balance;
 
-  private LocalDateTime deletedDate;
+    private LocalDateTime deletedDate;
 
-  private String deletedBy;
+    private String deletedBy;
 
-  private LocalDateTime updatedDate;
+    private LocalDateTime updatedDate;
 
-  private String updatedBy;
+    private String updatedBy;
 
-  private LocalDateTime createdDate;
+    private LocalDateTime createdDate;
 
-  private String createdBy;
+    private String createdBy;
 }
