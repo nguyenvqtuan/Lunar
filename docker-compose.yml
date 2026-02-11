@@ -25,24 +25,27 @@ services:
     networks:
       - lunar-network
 
-  # app:
-  #   image: nvtuanq123/payment-service:1.0.2   # image trên docker hub của bạn
-  #   container_name: lunar-app
-  #   restart: always
-  #   depends_on:
-  #     - postgres
-  #     - redis
-  #   ports:
-  #     - "8080:8080"
-  #   environment:
-  #     SPRING_PROFILES_ACTIVE: prod
-  #     SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/lunar_db
-  #     SPRING_DATASOURCE_USERNAME: lunar_user
-  #     SPRING_DATASOURCE_PASSWORD: lunar_password
-  #     REDIS_HOST: redis
-  #     REDIS_PORT: 6379
-  #   networks:
-  #     - lunar-network
+  app:
+     image: nvtuanq123/payment-service:1.0.2   # image trên docker hub của bạn
+     container_name: lunar-app
+     restart: always
+     depends_on:
+       - postgres
+       - redis
+     ports:
+       - "8080:8080"
+     environment:
+       SPRING_PROFILES_ACTIVE: prod
+       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/lunar_db
+       SPRING_DATASOURCE_USERNAME: lunar_user
+       SPRING_DATASOURCE_PASSWORD: lunar_password
+       REDIS_HOST: redis
+       REDIS_PORT: 6379
+       LOGGING_FILE_NAME: /var/log/lunar/app.log
+     networks:
+       - lunar-network
+     volumes:
+       - ./logs:/var/log/lunar
 
 volumes:
   postgres_data:

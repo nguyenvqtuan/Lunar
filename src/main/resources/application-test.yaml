@@ -10,7 +10,8 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create-drop
-  # Disable Redis to avoid CI failures
+
+  # Disable Redis in tests to avoid CI failures
   session:
     store-type: none
   data:

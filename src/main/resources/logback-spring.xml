@@ -1,4 +1,4 @@
-<configuration>
+<configuration debug="true">
 
     <!-- Import Spring Boot converters -->
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
@@ -6,6 +6,9 @@
     <springProperty scope="context"
                     name="appName"
                     source="spring.application.name"/>
+
+    <!-- Map spring boot property to logback variable -->
+    <springProperty scope="context" name="LOG_FILE" source="logging.file.name" defaultValue="/var/log/lunar/app.log"/>
 
     <springProfile name="dev">
         <appender name="CONSOLE"
@@ -21,50 +24,18 @@
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
-<!--    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>-->
-
-<!--    &lt;!&ndash; Application name from Spring &ndash;&gt;-->
-<!--    <springProperty scope="context"-->
-<!--                    name="appName"-->
-<!--                    source="spring.application.name"/>-->
-
-<!--    &lt;!&ndash; ============================= &ndash;&gt;-->
-<!--    &lt;!&ndash; DEV PROFILE (Readable Logs) &ndash;&gt;-->
-<!--    &lt;!&ndash; ============================= &ndash;&gt;-->
-<!--    <springProfile name="dev">-->
-
-<!--        <appender name="CONSOLE"-->
-<!--                  class="ch.qos.logback.core.ConsoleAppender">-->
-<!--            <encoder>-->
-<!--                <pattern>-->
-<!--                    %d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} %style{${spring:spring.application.name}}{blue} %style{[%X{X-Request-ID}][%X{traceId}][%X{spanId}]}{yellow bold} %highlight{${LOG_LEVEL_PATTERN:-%5p}}{FATAL=red, ERROR=red, WARN=yellow, INFO=green, DEBUG=green, TRACE=green} [%15.15t] %style{%-40.40C{1.}}{cyan} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}-->
-<!--                </pattern>-->
-<!--            </encoder>-->
-<!--        </appender>-->
-
-<!--        <root level="INFO">-->
-<!--            <appender-ref ref="CONSOLE"/>-->
-<!--        </root>-->
-
-<!--    </springProfile>-->
-
 
     <!-- ============================= -->
     <!-- PROD PROFILE (JSON Logging) -->
     <!-- ============================= -->
     <springProfile name="prod">
-
-        <appender name="JSON"
-                  class="ch.qos.logback.core.ConsoleAppender">
-            <encoder
-                    class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-
+        <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
                 <providers>
                     <timestamp/>
                     <logLevel/>
                     <threadName/>
                     <loggerName/>
-
                     <pattern>
                         <pattern>
                             {
@@ -74,17 +45,42 @@
                             }
                         </pattern>
                     </pattern>
-
                     <message/>
                     <stackTrace/>
                 </providers>
-
             </encoder>
+        </appender>
+
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_FILE}</file>
+            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <providers>
+                    <timestamp/>
+                    <logLevel/>
+                    <threadName/>
+                    <loggerName/>
+                    <pattern>
+                        <pattern>
+                            {
+                                "service": "${appName}",
+                                "traceId": "%X{traceId:-}",
+                                "requestId": "%X{requestId:-}"
+                            }
+                        </pattern>
+                    </pattern>
+                    <message/>
+                    <stackTrace/>
+                </providers>
+            </encoder>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.gz</fileNamePattern>
+                <maxHistory>30</maxHistory>
+            </rollingPolicy>
         </appender>
 
         <root level="INFO">
             <appender-ref ref="JSON"/>
+            <appender-ref ref="FILE"/>
         </root>
-
     </springProfile>
 </configuration>
