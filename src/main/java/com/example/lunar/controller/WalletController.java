@@ -1,10 +1,7 @@
 package com.example.lunar.controller;
 
-import com.example.lunar.dto.command.WalletCommand;
-import com.example.lunar.dto.mapper.WalletMapper;
 import com.example.lunar.dto.request.WalletRequest;
 import com.example.lunar.dto.response.ResponseRestApi;
-import com.example.lunar.dto.response.WalletResponse;
 import com.example.lunar.service.WalletService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,21 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class WalletController {
 
     private final WalletService walletService;
-    private final WalletMapper walletMapper;
 
     @PostMapping
     public ResponseRestApi<Boolean> createWallet(@RequestBody @Valid WalletRequest walletRequest) {
-        WalletCommand command = walletMapper.from(walletRequest);
-        walletService.createWallet(command);
-
         return ResponseRestApi.success(Boolean.FALSE);
     }
 
     @GetMapping
-    public ResponseRestApi<WalletResponse> getWallet(@RequestBody @Valid WalletRequest walletRequest) {
-        WalletCommand command = walletMapper.from(walletRequest);
-        WalletResponse walletResponse = walletService.getWallet(command);
+    public ResponseRestApi<Void> getWallet() {
 
-        return ResponseRestApi.success(walletResponse);
+        return ResponseRestApi.success();
     }
 }
