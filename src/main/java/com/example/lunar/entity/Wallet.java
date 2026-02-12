@@ -21,7 +21,7 @@ public class Wallet {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private UUID userId;
+    private String userName;
 
     private UUID currencyId;
 
