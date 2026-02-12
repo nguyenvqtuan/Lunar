@@ -5,4 +5,5 @@ import jakarta.validation.constraints.NotNull;
 
 public record WalletRequest(
         @Schema(description = "Tên tài khoản") @NotNull String userName,
-        @Schema(description = "Loại tiền tệ") @NotNull String currency) {}
+        @Schema(description = "Loại tiền tệ") @NotNull String currency) {
+}
