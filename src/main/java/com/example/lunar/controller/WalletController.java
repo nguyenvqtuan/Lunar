@@ -1,5 +1,6 @@
 package com.example.lunar.controller;
 
+import com.example.lunar.dto.command.WalletCommand;
 import com.example.lunar.dto.request.WalletRequest;
 import com.example.lunar.dto.response.ResponseRestApi;
 import com.example.lunar.service.WalletService;
@@ -18,8 +19,11 @@ public class WalletController {
 
     private final WalletService walletService;
 
-    @PostMapping
+    @PostMapping()
     public ResponseRestApi<Boolean> createWallet(@RequestBody @Valid WalletRequest walletRequest) {
+        WalletCommand command = new WalletCommand(walletRequest.userName(), walletRequest.currency());
+        walletService.createWallet(command);
+
         return ResponseRestApi.success(Boolean.FALSE);
     }
 
