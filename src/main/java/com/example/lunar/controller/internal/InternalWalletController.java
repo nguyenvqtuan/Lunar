@@ -20,10 +20,7 @@ public class InternalWalletController {
 
     @PostMapping("/validate")
     public ResponseRestApi<Void> validateWallet(@RequestBody @Valid WalletRequest walletRequest) {
-        WalletCommand command = WalletCommand.builder()
-                .userName(walletRequest.userName())
-                .currency(walletRequest.currency())
-                .build();
+        WalletCommand command = new WalletCommand(walletRequest.userName(), walletRequest.currency());
         internalWalletService.validateWallet(command);
 
         return ResponseRestApi.success();
