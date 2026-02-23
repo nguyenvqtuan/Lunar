@@ -18,7 +18,7 @@ public class WalletStatusRule implements WalletValidationRule<WalletCommand> {
     @Override
     public void validate(WalletCommand command) {
         Wallet wallet = walletRepository
-                .findByUsername(command.username())
+                .findByUsername(command.userName())
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
         if (WalletStatus.ACTIVE.getId().equals(wallet.getStatus())) {
