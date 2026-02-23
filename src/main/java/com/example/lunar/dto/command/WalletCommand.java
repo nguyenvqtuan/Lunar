@@ -1,3 +1,3 @@
 package com.example.lunar.dto.command;
 
-public record WalletCommand(String username, String currency) {}
+public record WalletCommand(String userName, String currency) {}
