@@ -6,8 +6,7 @@ import lombok.Getter;
 public enum IdempotencyStatus {
     NEW("New"),
     COMPLETED("Completed"),
-    PROCESSING("Processing"),
-    FAILED("Failed");
+    PROCESSING("Processing");
 
     private final String id;
 

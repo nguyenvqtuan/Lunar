@@ -1,6 +1,5 @@
 package com.example.lunar.service;
 
-import com.example.lunar.common.exception.ResourceNotFoundException;
 import com.example.lunar.dto.response.IdempotencyResult;
 import com.example.lunar.entity.Idempotency;
 import com.example.lunar.enumration.IdempotencyStatus;
@@ -27,23 +26,13 @@ public class IdempotencyService {
     }
 
     public void markCompleted(String key, Long transactionId) {
-        Idempotency record = idempotencyRepository
-                .findByIdempotencyKey(key)
-                .orElseThrow(() -> new ResourceNotFoundException("Idempotency key not found"));
+        Idempotency record = idempotencyRepository.findByIdempotencyKey(key).orElseThrow();
 
         if (IdempotencyStatus.COMPLETED.getId().equals(record.getStatus())) {
             return;
         }
 
         markCompleted(record, transactionId);
-        idempotencyRepository.save(record);
-    }
-
-    public void markFailed(String key) {
-        Idempotency record = idempotencyRepository
-                .findByIdempotencyKey(key)
-                .orElseThrow(() -> new ResourceNotFoundException("Idempotency key not found"));
-        markFailed(record);
         idempotencyRepository.save(record);
     }
 
@@ -65,10 +54,6 @@ public class IdempotencyService {
     private void markCompleted(Idempotency record, Long transactionId) {
         record.setTransactionId(transactionId);
         record.setStatus(IdempotencyStatus.COMPLETED.getId());
-    }
-
-    private void markFailed(Idempotency record) {
-        record.setStatus(IdempotencyStatus.FAILED.getId());
     }
 
     private Idempotency init(String key, String requestHash) {
