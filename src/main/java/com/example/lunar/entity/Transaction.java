@@ -8,32 +8,34 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "wallet")
+@Table(name = "transaction")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Wallet {
+@AllArgsConstructor
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username")
-    private String userName;
+    @Column(name = "from_wallet_id")
+    private Long fromWalletId;
 
-    @Column(name = "currency_id")
-    private Long currencyId;
+    @Column(name = "to_wallet_id")
+    private Long toWalletId;
+
+    @Column(name = "amount")
+    private BigDecimal amount;
 
     @Column(name = "status")
     private String status;
-
-    @Column(name = "balance")
-    private BigDecimal balance;
 
     @Column(name = "deleted_date")
     private LocalDateTime deletedDate;
