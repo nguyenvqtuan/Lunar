@@ -2,7 +2,6 @@ package com.example.lunar.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,7 +10,7 @@ import lombok.Data;
 public class WalletResponse {
 
     private String userName;
-    private UUID currencyId;
+    private Long currencyId;
     private String status;
     private BigDecimal balance;
     private LocalDateTime deletedDate;
