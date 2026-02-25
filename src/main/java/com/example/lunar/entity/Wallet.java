@@ -1,5 +1,6 @@
 package com.example.lunar.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,26 +20,36 @@ import lombok.Setter;
 public class Wallet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    @Column(name = "username")
     private String userName;
 
-    private UUID currencyId;
+    @Column(name = "currency_id")
+    private Long currencyId;
 
+    @Column(name = "status")
     private String status;
 
+    @Column(name = "balance")
     private BigDecimal balance;
 
+    @Column(name = "deleted_date")
     private LocalDateTime deletedDate;
 
+    @Column(name = "deleted_by")
     private String deletedBy;
 
+    @Column(name = "updated_date")
     private LocalDateTime updatedDate;
 
+    @Column(name = "updated_by")
     private String updatedBy;
 
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
+    @Column(name = "created_by")
     private String createdBy;
 }
