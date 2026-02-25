@@ -21,7 +21,7 @@ public class WalletStatusRule implements WalletValidationRule<WalletCommand> {
                 .findByUsername(command.userName())
                 .orElseThrow(() -> new ResourceNotFoundException("Wallet not found"));
 
-        if (WalletStatus.ACTIVE.getId().equals(wallet.getStatus())) {
+        if (!WalletStatus.ACTIVE.getId().equals(wallet.getStatus())) {
             throw new RuntimeException("Wallet not active");
         }
     }
