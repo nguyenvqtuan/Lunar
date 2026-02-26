@@ -5,6 +5,7 @@ import com.example.lunar.dto.command.WalletCommand;
 import com.example.lunar.dto.response.IdempotencyResult;
 import com.example.lunar.dto.response.TransferResult;
 import com.example.lunar.entity.Transaction;
+import com.example.lunar.enumration.TransferStatus;
 import com.example.lunar.helper.HashHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,15 +17,13 @@ public class TransferService {
 
     private final IdempotencyService idempotencyService;
     private final WalletService walletService;
+    private final LedgerService ledgerService;
     private final TransactionService transactionService;
 
     @Transactional
     public TransferResult transfer(TransferCommand command) {
         String requestHash = HashHelper.hash(command);
-
-        // 2️⃣ Idempotency gate
         IdempotencyResult idem = idempotencyService.checkOrCreate(command.idempotencyKey(), requestHash);
-
         if (idem.isCompleted()) {
             return transactionService.getById(idem.getTransactionId());
         }
@@ -33,27 +32,34 @@ public class TransferService {
             throw new RuntimeException("Already processing");
         }
 
-        WalletCommand walletCommand = WalletCommand.builder().build();
-        walletService.validateTransfer(walletCommand);
+        try {
+            WalletCommand walletCommand = WalletCommand.builder().build();
+            walletService.validateTransfer(walletCommand);
 
-        // IMPORTANT: always lock in deterministic order
-        Long from = command.fromWalletId();
-        Long to = command.toWalletId();
+            Transaction tx = transactionService.save(command, TransferStatus.PROCESSING);
 
-        if (from.compareTo(to) < 0) {
-            walletService.debit(from, command.amount());
-            walletService.credit(to, command.amount());
-        } else {
-            walletService.credit(to, command.amount());
-            walletService.debit(from, command.amount());
+            // IMPORTANT: always lock in deterministic order
+            Long from = command.fromWalletId();
+            Long to = command.toWalletId();
+
+            if (from.compareTo(to) < 0) {
+                walletService.debit(from, command.amount());
+                walletService.credit(to, command.amount());
+            } else {
+                walletService.credit(to, command.amount());
+                walletService.debit(from, command.amount());
+            }
+
+            ledgerService.createDebit(tx.getId(), from, command.amount());
+            ledgerService.createCredit(tx.getId(), to, command.amount());
+
+            transactionService.markCompleted(tx);
+            idempotencyService.markCompleted(command.idempotencyKey(), tx.getId());
+
+            return TransferResult.builder().transactionId(tx.getId().toString()).build();
+        } catch (Exception ex) {
+            idempotencyService.markFailed(command.idempotencyKey());
+            throw ex;
         }
-
-        // 5️⃣ Persist transaction
-        Transaction tx = transactionService.save(command);
-
-        // 6️⃣ Mark idempotency completed
-        idempotencyService.markCompleted(command.idempotencyKey(), tx.getId());
-
-        return TransferResult.builder().transactionId(tx.getId().toString()).build();
     }
 }
