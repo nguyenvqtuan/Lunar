@@ -14,9 +14,9 @@ server:
 
 spring:
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/demo}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:postgres}
+    url: ${DB_URL:jdbc:postgresql://localhost:5433/lunar_db}
+    username: ${DB_USERNAME:lunar_user}
+    password: ${DB_PASSWORD:lunar_password}
   jpa:
     hibernate:
       ddl-auto: update
