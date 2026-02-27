@@ -1,5 +1,6 @@
 package com.example.lunar.service;
 
+import com.example.lunar.dto.TransferCompletedEvent;
 import com.example.lunar.dto.command.TransferCommand;
 import com.example.lunar.dto.command.WalletCommand;
 import com.example.lunar.dto.response.IdempotencyResult;
@@ -7,6 +8,7 @@ import com.example.lunar.dto.response.TransferResult;
 import com.example.lunar.entity.Transaction;
 import com.example.lunar.helper.HashHelper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ public class TransferService {
     private final IdempotencyService idempotencyService;
     private final WalletService walletService;
     private final TransactionService transactionService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public TransferResult transfer(TransferCommand command) {
@@ -33,7 +36,11 @@ public class TransferService {
             throw new RuntimeException("Already processing");
         }
 
-        WalletCommand walletCommand = WalletCommand.builder().build();
+        WalletCommand walletCommand = WalletCommand.builder()
+                .fromWalletId(command.fromWalletId())
+                .toWalletId(command.toWalletId())
+                .amount(command.amount())
+                .build();
         walletService.validateTransfer(walletCommand);
 
         // IMPORTANT: always lock in deterministic order
@@ -53,6 +60,9 @@ public class TransferService {
 
         // 6️⃣ Mark idempotency completed
         idempotencyService.markCompleted(command.idempotencyKey(), tx.getId());
+
+        eventPublisher.publishEvent(
+                new TransferCompletedEvent(tx.getId(), command.fromWalletId(), command.toWalletId(), command.amount()));
 
         return TransferResult.builder().transactionId(tx.getId().toString()).build();
     }
